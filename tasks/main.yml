@@ -1,0 +1,12 @@
+---
+- name: add {{ name }}
+  user: name={{ name }} shell=/bin/bash state=present
+
+- name: make {{ name }} a sudoer
+  template: src=user-sudo dest=/etc/sudoers.d/{{ name }} owner=root group=root mode=0440
+
+- name: make /home/{{ name }}/.ssh
+  file: path=/home/{{ name }}/.ssh state=directory owner={{ name }} group={{ name }} mode=0700
+
+- name: /home/{{ name }}/.ssh/authorized_keys
+  template: src=authorized_keys dest=/home/{{ name }}/.ssh/authorized_keys owner={{ name }} group={{ name }} mode=0600
