@@ -1,12 +1,13 @@
 ---
+- include_vars: "{{ ansible_os_family }}.yml"
+
 - name: add {{ name }}
   user: name={{ name }} shell=/bin/bash state=present
+  when: ansible_os_family != "Solaris"
 
 - name: make {{ name }} a sudoer
-  template: src=user-sudo dest=/etc/sudoers.d/{{ name }} owner=root group=root mode=0440
+  template: src=user-sudo dest={{ etc_path }}/etc/sudoers.d/{{ name }} owner=root group=root mode=0440
+  when: ansible_os_family != "Solaris"
 
-- name: make /home/{{ name }}/.ssh
-  file: path=/home/{{ name }}/.ssh state=directory owner={{ name }} group={{ name }} mode=0700
-
-- name: /home/{{ name }}/.ssh/authorized_keys
-  template: src=authorized_keys dest=/home/{{ name }}/.ssh/authorized_keys owner={{ name }} group={{ name }} mode=0600
+- name: put ssh key for user or for root
+  authorized_key: user={{ name if ansible_os_family != "Solaris" else 'root' }} key="{{ ssh_public_key }}"
