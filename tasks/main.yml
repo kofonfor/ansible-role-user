@@ -1,6 +1,10 @@
 ---
 - include_vars: "{{ ansible_os_family }}.yml"
 
+- name: install sudo
+  portage: name=sudo state=present
+  when: ansible_os_family == "Gentoo"
+
 - name: add {{ name }}
   user: name={{ name }} shell=/bin/bash state=present
   when: ansible_os_family != "Solaris"
