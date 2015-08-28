@@ -5,6 +5,10 @@
   portage: name=sudo state=present
   when: ansible_os_family == "Gentoo"
 
+- name: install sudo
+  apt: name=sudo state=present
+  when: ansible_os_family == "Debian"
+
 - name: add {{ name }}
   user: name={{ name }} shell=/bin/bash state=present
   when: ansible_os_family != "Solaris"
