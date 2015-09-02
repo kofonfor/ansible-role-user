@@ -1,12 +1,16 @@
 ---
 - include_vars: "{{ ansible_os_family }}.yml"
 
-- name: add {{ name }}
-  user: name={{ name }} shell=/bin/bash state=present
+- name: create wheel group
+  group: name=wheel state=present
+  tags: vagrant
+
+- name: wheel sudoers
+  template: src=wheel-nopasswd dest={{ etc_path }}/etc/sudoers.d/wheel-nopasswd owner=root group=root mode=0440
   when: ansible_os_family != "Solaris"
 
-- name: make {{ name }} a sudoer
-  template: src=user-sudo dest={{ etc_path }}/etc/sudoers.d/{{ name }} owner=root group=root mode=0440
+- name: add {{ name }}
+  user: name={{ name }} shell=/bin/bash state=present groups=wheel append=yes
   when: ansible_os_family != "Solaris"
 
 - name: put ssh key for user or for root
