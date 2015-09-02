@@ -1,6 +1,14 @@
 ---
 - include_vars: "{{ ansible_os_family }}.yml"
 
+- name: install sudo
+  portage: name=sudo state=present
+  when: ansible_os_family == "Gentoo"
+
+- name: install sudo
+  apt: name=sudo state=present
+  when: ansible_os_family == "Debian"
+
 - name: create wheel group
   group: name=wheel state=present
   tags: vagrant
