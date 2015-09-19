@@ -3,22 +3,23 @@
 
 - name: install sudo
   portage: name=sudo state=present
-  when: ansible_os_family == "Gentoo"
+  when: ansible_os_family == "Gentoo" and user_sudo
 
 - name: install sudo
   apt: name=sudo state=present
-  when: ansible_os_family == "Debian"
+  when: ansible_os_family == "Debian" and user_sudo
 
 - name: create wheel group
   group: name=wheel state=present
+  when: user_sudo
   tags: vagrant
 
 - name: wheel sudoers
   template: src=wheel-nopasswd dest={{ etc_path }}/etc/sudoers.d/wheel-nopasswd owner=root group=root mode=0440
-  when: ansible_os_family != "Solaris"
+  when: ansible_os_family != "Solaris" and user_sudo
 
 - name: add {{ name }}
-  user: name={{ name }} shell=/bin/bash state=present groups=wheel append=yes
+  user: name={{ name }} shell=/bin/bash state=present {{ 'wheel' if user_sudo else '' }} append=yes
   when: ansible_os_family != "Solaris"
 
 - name: put ssh key for user or for root
