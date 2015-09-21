@@ -22,5 +22,9 @@
   user: name={{ name }} shell=/bin/bash state=present groups={{ 'wheel' if user_sudo else '' }} append=yes
   when: ansible_os_family != "Solaris"
 
+- name: set {{ name }} password
+  user: name={{ name }} password={{ password }}
+  when: ansible_os_family != "Solaris" and password is defined
+
 - name: put ssh key for user or for root
   authorized_key: user={{ name if ansible_os_family != "Solaris" else 'root' }} key="{{ ssh_public_key }}"
