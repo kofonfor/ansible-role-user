@@ -19,7 +19,7 @@
   when: ansible_os_family != "Solaris" and user_sudo
 
 - name: add {{ name }}
-  user: name={{ name }} shell=/bin/bash state=present groups={{ 'wheel' if user_sudo else '' }} append=yes
+  user: name={{ name }} shell={{ shell }} state=present groups={{ 'wheel' if user_sudo else '' }} append=yes
   when: ansible_os_family != "Solaris"
 
 - name: set {{ name }} password
