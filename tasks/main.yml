@@ -18,13 +18,13 @@
   template: src=wheel-nopasswd dest={{ etc_path }}/etc/sudoers.d/wheel-nopasswd owner=root group=root mode=0440
   when: ansible_os_family != "Solaris" and user_sudo
 
-- name: add {{ name }}
-  user: name={{ name }} shell={{ shell }} state=present groups={{ 'wheel' if user_sudo else '' }} append=yes
+- name: add "{{ user_name }}"
+  user: name="{{ user_name }}" shell={{ shell }} state=present groups={{ 'wheel' if user_sudo else '' }} append=yes
   when: ansible_os_family != "Solaris"
 
-- name: set {{ name }} password
-  user: name={{ name }} password={{ password }}
+- name: set {{ user_name }} password
+  user: name={{ user_name }} password={{ password }}
   when: ansible_os_family != "Solaris" and password is defined
 
 - name: put ssh key for user or for root
-  authorized_key: user={{ name if ansible_os_family != "Solaris" else 'root' }} key="{{ ssh_public_key }}"
+  authorized_key: user={{ user_name if ansible_os_family != "Solaris" else 'root' }} key="{{ ssh_public_key }}"
