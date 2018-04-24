@@ -1,2 +1,3 @@
 user_sudo: yes
 shell: /bin/bash
+user_state: present
